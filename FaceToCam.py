@@ -2,6 +2,21 @@ import maya.cmds as cmds
 import traceback
 from functools import partial
 
+def check_constraint(obj):
+    out_constraint = []
+
+    # -- check constraint existence
+    if cmds.objExists(obj):
+        obj_child = cmds.listRelatives(obj, children=True)
+        # -- if there is children
+        if obj_child:
+            # -- search if any of the children contains constraint inside it's node type name
+            for c in obj_child:
+                if 'constraint' in str(cmds.nodeType(c)).lower():
+                    out_constraint.append(c)
+
+    return out_constraint
+
 def orient(objects ,cam_name='camera_test'):
    """
    Create  a aim constraint on multiple objects to a camera, and then delete the resulting constraint
@@ -11,6 +26,7 @@ def orient(objects ,cam_name='camera_test'):
    """
    if cmds.objExists(cam_name):
        for mesh in objects:
+
            constraint_node = cmds.aimConstraint(cam_name, mesh, offset=[0, 0, 0], weight=1, aimVector=[0, 0, -1], upVector=[0, 1, 0],
                               worldUpType="vector", worldUpVector=[0, 1, 0], skip = ["x", "z"], o = [0, 180, 0])
            cmds.delete(constraint_node)
