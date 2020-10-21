@@ -1,13 +1,16 @@
 import maya.cmds as cmds
 import traceback
 from functools import partial
+import os
+
+
 
 def check_constraint(obj):
     out_constraint = []
 
     # -- check constraint existence
     if cmds.objExists(obj):
-        obj_child = cmds.listRelatives(obj, children=True)
+        obj_child = cmds.listRelatives(obj, children=True, fullPath=True)
         # -- if there is children
         if obj_child:
             # -- search if any of the children contains constraint inside it's node type name
@@ -32,7 +35,7 @@ def orient(objects ,cam_name='camera_test'):
    """
    if cmds.objExists(cam_name):
        for mesh in objects:
-           existing_constraint = check_constraint(obj)
+           existing_constraint = check_constraint(mesh)
            if existing_constraint:
                print('Constraint on '+str(mesh)+': skipping orient to cam')
                continue
