@@ -33,18 +33,14 @@ def orient(objects ,cam_name='camera_test'):
    if cmds.objExists(cam_name):
        for mesh in objects:
            existing_constraint = check_constraint(obj)
-
            if existing_constraint:
-               for cst in existing_constraint:
-                   disable_constraint(cst)
+               print('Constraint on '+str(mesh)+': skipping orient to cam')
+               continue
 
            constraint_node = cmds.aimConstraint(cam_name, mesh, offset=[0, 0, 0], weight=1, aimVector=[0, 0, -1], upVector=[0, 1, 0],
                               worldUpType="vector", worldUpVector=[0, 1, 0], skip = ["x", "z"], o = [0, 180, 0])
            cmds.delete(constraint_node)
 
-           if existing_constraint:
-               for cst in existing_constraint:
-                   enable_constraint(cst)
 
    else:
        cmds.error('The specified camera does not exist inside your scene: '+str(cam_name))
